@@ -8,11 +8,12 @@
 #include "helpers/timer.h"
 #include "helpers/environment.h"
 
+
 const int BOID_WIDTH  = 60 ;
 const int BOID_HEIGHT = 30;
-const int NUM_BOIDS = 420;
+const int NUM_BOIDS = 600;
 const int STEPS = 40;
-const int BOID_SPEED = 9;
+const int BOID_SPEED = 8;
 const double MAX_AVOID = 0.10;
 const double MAX_ALN   = 0.0009;
 const double MAX_CSN   = 0.00006;
@@ -244,7 +245,7 @@ int main()
 	bool running = true;
 
 	SDL_Texture* texture = NULL; 
-	texture=loadFromFile( "fish3.png", renderer, texture );
+	texture=loadFromFile( "images/fish3.png", renderer, texture );
 	int counter=0;
 
 	Boid boids[NUM_BOIDS];
