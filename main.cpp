@@ -5,8 +5,7 @@
 #include <vector>
 #include <cmath>
 #include <iostream>
-#include "helpers/timer.h"
-#include "helpers/environment.h"
+#include "environment.h"
 
 
 const int BOID_WIDTH  = 60 ;
