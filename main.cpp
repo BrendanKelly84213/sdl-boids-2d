@@ -5,8 +5,8 @@
 #include <vector>
 #include <cmath>
 #include <iostream>
-#include "../SDL_Stuff/timer.h"
-#include "../SDL_Stuff/environment.h"
+#include "helpers/timer.h"
+#include "helpers/environment.h"
 
 const int BOID_WIDTH  = 60 ;
 const int BOID_HEIGHT = 30;
@@ -261,6 +261,9 @@ int main()
 						running = false;
 					break;
 				}
+			} 
+			if( e.type == SDL_QUIT ) {
+				running = false;
 			}
 		}
 

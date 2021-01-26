@@ -1,0 +1,3 @@
+[submodule "sdl-helpers"]
+	path = sdl-helpers
+	url = https://github.com/BrendanKelly84213/sdl-helpers
