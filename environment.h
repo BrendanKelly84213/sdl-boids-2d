@@ -1,5 +1,5 @@
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+static int SCREEN_WIDTH=640;
+static int SCREEN_HEIGHT=480;
 
 void free( SDL_Texture** texture );
 //Make an image into an SDL_Texture
@@ -11,6 +11,8 @@ void close( SDL_Window** window, SDL_Renderer** renderer, SDL_Texture** texture=
 
 bool init( SDL_Window** window, SDL_Renderer** renderer )
 {
+
+
 	if( SDL_Init( SDL_INIT_VIDEO ) != 0 ) {
 		printf( "Failed to initialize video %s\n", SDL_GetError() );
 		return false;
@@ -22,8 +24,10 @@ bool init( SDL_Window** window, SDL_Renderer** renderer )
 			SDL_WINDOWPOS_UNDEFINED,
 			SCREEN_WIDTH,
 			SCREEN_HEIGHT,
-			0
+			SDL_WINDOW_MAXIMIZED|SDL_WINDOW_RESIZABLE
 	);
+
+
 	if( *window == NULL ) {
 		printf( "Could not create window: %s\n", SDL_GetError() );
 		return false;	

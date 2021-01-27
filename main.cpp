@@ -7,12 +7,10 @@
 #include <iostream>
 #include "environment.h"
 
-
 const int BOID_WIDTH  = 60 ;
 const int BOID_HEIGHT = 30;
-const int NUM_BOIDS = 600;
 const int STEPS = 40;
-const int BOID_SPEED = 8;
+const int BOID_SPEED = 7;
 const double MAX_AVOID = 0.10;
 const double MAX_ALN   = 0.0009;
 const double MAX_CSN   = 0.00006;
@@ -20,6 +18,10 @@ const double BOID_SIGHT_RADIUS = 100;
 const double DEG_TO_RAD = 0.01745329;
 const double OFFSET = 180;
 constexpr double pi = std::atan(1)*4; 
+
+const int DEFAULT_NUM_BOIDS = 600;
+
+int NUM_BOIDS;
 
 struct Vec2
 {
@@ -175,8 +177,8 @@ cohesion: steer to move towards the average position (center of mass) of local f
 
 enum Flag { ALIGN, COHESE, AVOID };
 
-//Direction of boids acceleration
-Vec2 steer( Boid current, Boid boids[NUM_BOIDS], Flag f ) 
+// Direction of boids acceleration
+Vec2 steer( Boid current, Boid boids[DEFAULT_NUM_BOIDS], Flag f ) 
 {
 	Vec2 avg, steer;
 	double x=current.pos.x;
@@ -209,7 +211,8 @@ Vec2 steer( Boid current, Boid boids[NUM_BOIDS], Flag f )
 		avg.y /= total;
 
 		if( std::isnan( vecMag( avg ) ) ) {
-			std::cout << vecMag( avg ) << '\n'; 
+			// Outputs -nan
+			/* std::cout << vecMag( avg ) << '\n'; */ 
 			return Vec2();
 		}
 
@@ -231,11 +234,21 @@ Vec2 steer( Boid current, Boid boids[NUM_BOIDS], Flag f )
 	return limit( steer, scaler() );
 }
 
-int main() 
+int main( int argc, char *argv[] ) 
 {
 	SDL_Window*   window   = NULL;  
 	SDL_Renderer* renderer = NULL;
 
+	// Set number of boids
+	if( !argv[1] ) {
+		NUM_BOIDS = DEFAULT_NUM_BOIDS;
+		std::cout << "No argument detected" << '\n';
+	} else  {
+		NUM_BOIDS = atoi( argv[1] ); 
+		std::cout << "agrument" << NUM_BOIDS << '\n';
+	}
+
+	// Init window
 	if( !init( & window, & renderer ) ) {
 		return 1;	
 	}
@@ -248,6 +261,11 @@ int main()
 	int counter=0;
 
 	Boid boids[NUM_BOIDS];
+
+	// Update window size 
+	// Have to call SDL_PollEvent for some reason
+	SDL_PollEvent( &e );
+	SDL_GetWindowSize( window, &SCREEN_WIDTH, &SCREEN_HEIGHT );
 
 	for( int i=0; i < NUM_BOIDS; ++i ) {
 		boids[i] = randBoid();
@@ -267,9 +285,12 @@ int main()
 			}
 		}
 
-		//Clear screen
+		// Clear screen
 		SDL_SetRenderDrawColor( renderer, 0, 0, 0, SDL_ALPHA_OPAQUE );
 		SDL_RenderClear( renderer );
+
+		// Update window size
+		SDL_GetWindowSize( window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
 
 		for( int i=0; i < NUM_BOIDS; ++i ) {
 			double angle = vecDir( boids[i].vel );
@@ -282,8 +303,9 @@ int main()
 
 			boids[i].accel = steering; 
 
-			if(vecMag(boids[i].vel) < BOID_SPEED) 
+			if(vecMag(boids[i].vel) < BOID_SPEED) {
 				boids[i].vel = newMag(boids[i].vel, BOID_SPEED);
+			}
 
 			boids[i].box = { boids[i].pos.x - BOID_WIDTH/2, boids[i].pos.y - BOID_HEIGHT/2, 
 				BOID_WIDTH, BOID_HEIGHT };
