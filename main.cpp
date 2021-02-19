@@ -5,19 +5,25 @@
 #include <vector>
 #include <cmath>
 #include <iostream>
+
 #include "environment.h"
+#include "timer.h"
 
 const int BOID_WIDTH  = 60 ;
 const int BOID_HEIGHT = 30;
 const int STEPS = 40;
 const int BOID_SPEED = 7;
-const double MAX_AVOID = 0.10;
-const double MAX_ALN   = 0.0009;
-const double MAX_CSN   = 0.00006;
-const double BOID_SIGHT_RADIUS = 100;
+const double MAX_AVOID = 0.12;
+const double MAX_ALN   = 0.00047;
+const double MAX_CSN   = 0.000006;
+const double BOID_SIGHT_RADIUS = 120;
 const double DEG_TO_RAD = 0.01745329;
 const double OFFSET = 180;
 constexpr double pi = std::atan(1)*4; 
+
+const int SCREEN_FPS = 60;
+const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
+
 
 const int DEFAULT_NUM_BOIDS = 600;
 
@@ -239,6 +245,16 @@ int main( int argc, char *argv[] )
 	SDL_Window*   window   = NULL;  
 	SDL_Renderer* renderer = NULL;
 
+  	//The frames per second timer
+       	LTimer fpsTimer;
+
+        //The frames per second cap timer
+        LTimer capTimer;
+
+        //Start counting frames per second
+        int countedFrames = 0;
+        fpsTimer.start();
+
 	// Set number of boids
 	if( !argv[1] ) {
 		NUM_BOIDS = DEFAULT_NUM_BOIDS;
@@ -285,6 +301,15 @@ int main( int argc, char *argv[] )
 			}
 		}
 
+                //Start cap timer
+                capTimer.start();
+
+                //Calculate and correct fps
+                float avgFPS = countedFrames / ( fpsTimer.getTicks() / 1000.f );
+                if( avgFPS > 2000000 ) {
+                    avgFPS = 0;
+                }
+
 		// Clear screen
 		SDL_SetRenderDrawColor( renderer, 0, 0, 0, SDL_ALPHA_OPAQUE );
 		SDL_RenderClear( renderer );
@@ -318,6 +343,13 @@ int main( int argc, char *argv[] )
 		//Update screen
 		SDL_RenderPresent( renderer );
 		//SDL_Delay(15);
+
+		// If frame finished early
+                int frameTicks = capTimer.getTicks();
+                if( frameTicks < SCREEN_TICKS_PER_FRAME ) {
+                    //Wait remaining time
+                    SDL_Delay( SCREEN_TICKS_PER_FRAME - frameTicks );
+                }
 	}
 
 	//Free and close SDL
