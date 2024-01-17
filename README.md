@@ -9,6 +9,6 @@ Build with `make`
 
 Install (Debian based systems) 
 ```
-sudo apt install libsdl2-dev && libsdl2-image-dev
+sudo apt install libsdl2-dev && sudo apt install libsdl2-image-dev
 ```
 A good resource for installing on other systems: https://lazyfoo.net/tutorials/SDL/01_hello_SDL/linux/index.php
